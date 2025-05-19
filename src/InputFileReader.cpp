@@ -117,6 +117,64 @@ void InputFileReader::fillMatrix(const vector<TString> &filenames, const vector<
 
 	}
 }
+//////Refilwe added 06/april/2025 to normalise the matrix to probabilities////////////
+
+/*void InputFileReader::fillMatrixWeighted(const vector<TString> &filenames,
+                                         const vector<Double_t> &energies,
+                                         const vector<Double_t> &n_particles,
+                                         const TString histname,
+                                         TH2F &response_matrix,
+                                         TH1F &n_simulated_particles,
+                                         Int_t i,
+                                         Int_t simulation,
+                                         Double_t weight) {
+    TFile *inputFile = new TFile(filenames[(long unsigned int) simulation]);
+    TH1F *hist = nullptr;
+    Int_t simulationBin;
+
+    TAxis* ReMaXAxis = response_matrix.GetXaxis();
+    TAxis* ReMaYAxis = response_matrix.GetYaxis();
+
+    if (gDirectory->FindKey(histname)) {
+        hist = (TH1F*) gDirectory->Get(histname);
+    } else {
+        cout << __FILE__ << ":" << __FUNCTION__ << "():" << __LINE__ 
+             << ": Error: No TH1F object called '" << histname 
+             << "' found in '" << filenames[(long unsigned int) simulation] 
+             << "'. Aborting ..." << endl; 
+        abort();
+    }
+
+    Double_t n_part = n_particles[(long unsigned int) simulation];
+
+    for (Int_t simNo = 1; simNo <= (Int_t) NBINS; ++simNo) {
+        simulationBin = hist->FindBin(
+            0.001 * ( // utr simulations have their axis in MeV
+                energies[(long unsigned int) simulation]
+                - ReMaXAxis->GetBinCenter(i)
+                + ReMaYAxis->GetBinCenter(simNo)
+            )
+        );
+
+        if (1 <= simulationBin && simulationBin <= hist->GetNbinsX()) {
+            if (n_part > 0) {
+                response_matrix.SetBinContent(
+                    i, simNo,
+                    response_matrix.GetBinContent(i, simNo) +
+                    (weight * hist->GetBinContent(simulationBin)) / n_part
+                );
+            }
+        }
+    }
+
+    // Store the number of simulated particles (optional but useful to keep for reference)
+    n_simulated_particles.SetBinContent(i, n_part);
+
+    inputFile->Close();
+}
+*/
+/////////////////////////////////////////////
+
 
 void InputFileReader::fillMatrixWeighted(const vector<TString> &filenames, const vector<Double_t> &energies, const vector<Double_t> &n_particles, const TString histname, TH2F &response_matrix, TH1F &n_simulated_particles, Int_t i, Int_t simulation, Double_t weight) {
 	TFile *inputFile = new TFile(filenames[(long unsigned int) simulation]);
